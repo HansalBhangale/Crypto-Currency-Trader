@@ -1,0 +1,17 @@
+project:
+  name: "rl-crypto-trader"
+  env: "mainnet"          # mainnet for public market data
+  exchange: "binance"     # public websockets (no account required)
+  symbol_spot: "BTCUSDT"
+  symbol_perp: "BTCUSDT"  # keep same for now (we'll map to perp streams later)
+
+paths:
+  data_dir: "data"
+  raw_dir: "data/raw"
+  derived_dir: "data/derived"
+  logs_dir: "data/logs"
+
+logging:
+  level: "INFO"
+  to_file: true
+  filename: "data/logs/app.log"
