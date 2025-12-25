@@ -11,15 +11,15 @@ log = logging.getLogger("trader.spot_features")
 
 def build_spot_features_5m(input_5m_csv: str, output_csv: str) -> None:
     """
-    Input:  spot_5m_bars.csv columns:
+    Input:  spot_5m_bars.csv with columns:
       bar_ts, symbol, open, high, low, close, mid_vwap, spread_bps_mean, spread_bps_p95, n_ticks
 
-    Output: spot_features_5m.csv columns (v0):
+    Output: spot_features_5m.csv with columns (v1):
       bar_ts, symbol, close,
       r_5m, r_15m, r_1h, r_4h,
       vol_1h, vol_6h,
       spread_bps_mean, spread_bps_p95, n_ticks,
-      dq_score, unsafe
+      dq_score, unsafe, caution
     """
     in_path = Path(input_5m_csv)
     out_path = Path(output_csv)
@@ -54,23 +54,38 @@ def build_spot_features_5m(input_5m_csv: str, output_csv: str) -> None:
         g["vol_6h"] = r5.rolling(72, min_periods=72).std()
 
         # -----------------------------
-        # Data Quality (DQ) + UNSAFE
+        # Data Quality (DQ)
         # -----------------------------
-        g["tick_ok"] = (g["n_ticks"] >= 240).astype(int)
-        g["spread_ok"] = (g["spread_bps_mean"] <= 5.0).astype(int)
+        # tick completeness: expect ~300 1s samples per 5m
+        expected_ticks = 300.0
+        g["tick_score"] = (g["n_ticks"].astype(float) / expected_ticks).clip(0.0, 1.0)
 
-        g["jump_ok"] = np.where(g["r_5m"].isna(), 1, (g["r_5m"].abs() <= 0.02).astype(int))
+        # spread sanity (bps). Conservative threshold for BTC.
+        g["spread_ok"] = (g["spread_bps_mean"].astype(float) <= 5.0).astype(int)
 
-        g["dq_score"] = 0.4 * g["tick_ok"] + 0.3 * g["spread_ok"] + 0.3 * g["jump_ok"]
-        g["unsafe"] = (g["dq_score"] < 0.9).astype(int)
+        # jump/outlier sanity based on 5m log return magnitude
+        # Treat NaN return (first bar) as OK
+        jump_ok = (g["r_5m"].isna()) | (g["r_5m"].abs() <= 0.02)
+        g["jump_ok"] = jump_ok.astype(int)
+
+        # DQ score: continuous tick completeness + hard checks
+        g["dq_score"] = 0.4 * g["tick_score"] + 0.3 * g["spread_ok"] + 0.3 * g["jump_ok"]
+
+        # Hard-stop UNSAFE only if truly bad (avoid blocking baseline too often)
+        g["unsafe"] = (g["dq_score"] < 0.75).astype(int)
+
+        # Caution flag (ok to trade if you choose, but track it)
+        g["caution"] = ((g["dq_score"] >= 0.75) & (g["dq_score"] < 0.90)).astype(int)
 
         out_cols = [
             "bar_ts", "symbol", "close",
             "r_5m", "r_15m", "r_1h", "r_4h",
             "vol_1h", "vol_6h",
             "spread_bps_mean", "spread_bps_p95", "n_ticks",
-            "dq_score", "unsafe",
-        ]
+            "tick_score",
+            "dq_score", "unsafe", "caution",
+]
+
         out.append(g[out_cols])
 
     out_df = pd.concat(out, ignore_index=True) if out else pd.DataFrame()
