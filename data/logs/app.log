@@ -2477,3 +2477,81 @@
 2025-12-25 19:03:50,013 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
 2025-12-25 19:04:00,036 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
 2025-12-25 19:04:10,010 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
+2025-12-25 19:04:20,013 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
+2025-12-25 19:04:30,019 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
+2025-12-25 19:04:40,442 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
+2025-12-25 19:04:50,098 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
+2025-12-25 19:05:00,719 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
+2025-12-25 19:05:10,002 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87474.84 ask=87474.85 mid=87474.85
+2025-12-25 19:05:20,183 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87487.12 ask=87487.13 mid=87487.12
+2025-12-25 19:05:30,035 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87487.12 ask=87487.13 mid=87487.12
+2025-12-25 19:05:40,118 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87487.12 ask=87487.13 mid=87487.12
+2025-12-25 19:05:50,192 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87487.12 ask=87487.13 mid=87487.12
+2025-12-25 19:06:00,000 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87490.89 ask=87490.90 mid=87490.89
+2025-12-25 19:06:10,189 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:06:20,025 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:06:30,041 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:06:40,019 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:06:50,002 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:07:00,005 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:07:10,096 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:07:20,342 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:07:30,021 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:07:40,010 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:07:50,011 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:08:00,029 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:08:10,019 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:08:20,021 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:08:30,057 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:08:40,019 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:08:50,013 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:09:00,046 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:09:10,018 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:09:20,015 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:09:30,062 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:09:40,003 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87493.01 ask=87493.02 mid=87493.01
+2025-12-25 19:09:50,068 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87494.57 ask=87494.58 mid=87494.58
+2025-12-25 19:10:00,011 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87494.57 ask=87494.58 mid=87494.58
+2025-12-25 19:10:10,024 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:10:20,074 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:10:30,089 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:10:40,025 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:10:50,090 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:11:00,055 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:11:10,001 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:11:20,064 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:11:30,012 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:11:40,105 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:11:50,025 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:12:00,024 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:12:10,061 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87513.80 ask=87513.81 mid=87513.80
+2025-12-25 19:12:20,211 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87521.16 ask=87521.17 mid=87521.17
+2025-12-25 19:12:30,022 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87522.14 ask=87522.15 mid=87522.14
+2025-12-25 19:12:34,097 | INFO | trader.main | OK: config + logging initialized
+2025-12-25 19:12:34,097 | INFO | trader.main | Project=rl-crypto-trader Env=mainnet Exchange=binance
+2025-12-25 19:12:34,097 | INFO | trader.main | Spot symbol=BTCUSDT Perp symbol=BTCUSDT
+2025-12-25 19:12:34,098 | INFO | trader.main | Dirs: raw=data/raw derived=data/derived logs=data/logs
+2025-12-25 19:12:40,098 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87555.40 ask=87555.41 mid=87555.40
+2025-12-25 19:12:50,020 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87579.44 ask=87579.45 mid=87579.45
+2025-12-25 19:13:00,440 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87585.62 ask=87585.63 mid=87585.62
+2025-12-25 19:13:10,030 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87581.26 ask=87581.27 mid=87581.26
+2025-12-25 19:13:20,026 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87581.26 ask=87581.27 mid=87581.26
+2025-12-25 19:13:29,705 | INFO | trader.main | OK: config + logging initialized
+2025-12-25 19:13:29,705 | INFO | trader.main | Project=rl-crypto-trader Env=mainnet Exchange=binance
+2025-12-25 19:13:29,705 | INFO | trader.main | Spot symbol=BTCUSDT Perp symbol=BTCUSDT
+2025-12-25 19:13:29,705 | INFO | trader.main | Dirs: raw=data/raw derived=data/derived logs=data/logs
+2025-12-25 19:13:29,965 | INFO | trader.main | Building 1m bars: data\raw\spot_bbo.csv -> data\derived\spot_1m_bars.csv
+2025-12-25 19:13:29,998 | INFO | trader.spot_bars | Wrote 1m bars: data\derived\spot_1m_bars.csv (rows=25)
+2025-12-25 19:13:30,008 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87596.22 ask=87596.23 mid=87596.23
+2025-12-25 19:13:40,070 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87614.40 ask=87614.41 mid=87614.40
+2025-12-25 19:13:50,006 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87618.87 ask=87618.88 mid=87618.88
+2025-12-25 19:14:00,030 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87618.87 ask=87618.88 mid=87618.88
+2025-12-25 19:14:10,002 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87627.11 ask=87627.12 mid=87627.11
+2025-12-25 19:14:20,026 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87650.18 ask=87650.19 mid=87650.18
+2025-12-25 19:14:30,134 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87622.28 ask=87622.29 mid=87622.29
+2025-12-25 19:14:40,093 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87622.00 ask=87622.01 mid=87622.01
+2025-12-25 19:14:50,116 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87616.11 ask=87616.12 mid=87616.11
+2025-12-25 19:15:00,032 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87616.11 ask=87616.12 mid=87616.11
+2025-12-25 19:15:10,096 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87616.11 ask=87616.12 mid=87616.11
+2025-12-25 19:15:20,000 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87616.11 ask=87616.12 mid=87616.11
+2025-12-25 19:15:30,045 | INFO | trader.binance_spot_bbo | BBO BTCUSDT bid=87565.99 ask=87566.00 mid=87565.99

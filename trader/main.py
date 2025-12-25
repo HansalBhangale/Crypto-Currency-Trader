@@ -25,7 +25,7 @@ def main() -> int:
         "--run",
         type=str,
         default="",
-        choices=["", "spot_bbo"],
+        choices=["", "spot_bbo", "spot_bars_1m"],
         help="Optional runnable: spot_bbo",
     )
     args = parser.parse_args()
@@ -49,6 +49,14 @@ def main() -> int:
         out_csv = str(Path(settings.paths.raw_dir) / "spot_bbo.csv")
         log.info("Starting spot BBO stream -> %s", out_csv)
         asyncio.run(stream_spot_bbo(settings.project.symbol_spot, out_csv))
+        return 0
+    if args.run == "spot_bars_1m":
+        from trader.features.spot_bars import build_spot_1m_bars
+
+        in_csv = str(Path(settings.paths.raw_dir) / "spot_bbo.csv")
+        out_csv = str(Path(settings.paths.derived_dir) / "spot_1m_bars.csv")
+        log.info("Building 1m bars: %s -> %s", in_csv, out_csv)
+        build_spot_1m_bars(in_csv, out_csv)
         return 0
 
     return 0
