@@ -25,7 +25,8 @@ def main() -> int:
         "--run",
         type=str,
         default="",
-        choices=["", "spot_bbo", "spot_bars_1m", "spot_bars_5m", "spot_features_5m"],
+        choices=["", "spot_bbo", "spot_bars_1m", "spot_bars_5m", "spot_features_5m", "perp_funding"],
+
         help="Optional runnable: spot_bbo",
     )
     args = parser.parse_args()
@@ -74,6 +75,14 @@ def main() -> int:
         log.info("Building 5m features: %s -> %s", in_csv, out_csv)
         build_spot_features_5m(in_csv, out_csv)
         return 0
+    if args.run == "perp_funding":
+        from trader.data.binance_perp_funding import stream_perp_funding
+
+        out_csv = str(Path(settings.paths.raw_dir) / "perp_funding.csv")
+        log.info("Starting perp funding poller -> %s", out_csv)
+        asyncio.run(stream_perp_funding(settings.project.symbol_perp, out_csv, poll_s=60.0))
+        return 0
+
 
 
 

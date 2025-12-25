@@ -1,3 +1,4 @@
 pyyaml
 websockets
 pandas
+httpx
