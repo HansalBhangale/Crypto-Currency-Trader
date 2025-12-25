@@ -14,28 +14,67 @@ log = logging.getLogger("trader.baseline_signals")
 
 @dataclass
 class BaselineConfig:
-    funding_thr: float = 0.0002      # 0.02% per 8h
-    basis_max_bps: float = 10.0      # don't enter if basis is too wide
-    min_minutes_to_funding: float = 30.0  # avoid too close to funding in v0
-    size_btc: float = 0.01           # small preview size (no trading yet)
+    # Entry thresholds tuned to your live prints (~8e-05 funding, basis around -2 to -7 bps)
+    funding_thr: float = 0.00007          # 0.007% per 8h
+    basis_enter_bps: float = 0.0          # require perp <= spot (basis <= 0)
+    basis_exit_bps: float = 1.0           # exit if basis flips positive enough
+
+    # Funding time window: allow trading up to 10 min before funding
+    min_minutes_to_funding: float = 10.0
+
+    # Keep tiny preview size for now
+    size_btc: float = 0.01
 
 
 def _read_last_row(csv_path: Path) -> dict | None:
     if not csv_path.exists():
         return None
-    df = pd.read_csv(csv_path)
-    if df.empty:
+    try:
+        df = pd.read_csv(csv_path)
+        if df.empty:
+            return None
+        return df.iloc[-1].to_dict()
+    except pd.errors.EmptyDataError:
+        # File exists but is empty or has only header
         return None
-    return df.iloc[-1].to_dict()
 
 
-def decide_signal(unsafe: int, basis_bps: float, funding_rate_8h: float, minutes_to_funding: float, cfg: BaselineConfig):
+def _read_last_action(csv_path: Path) -> str | None:
+    row = _read_last_row(csv_path)
+    if row is None:
+        return None
+    return str(row.get("action")) if "action" in row else None
+
+
+def decide_signal(
+    unsafe: int,
+    basis_bps: float,
+    funding_rate_8h: float,
+    minutes_to_funding: float,
+    in_pos: bool,
+    cfg: BaselineConfig,
+) -> tuple[str, float, str]:
+    # Hard stop
     if unsafe == 1:
         return ("FLAT", 0.0, "unsafe=1")
+
+    # Avoid last few minutes before funding (riskier execution / jumps)
     if minutes_to_funding < cfg.min_minutes_to_funding:
         return ("FLAT", 0.0, f"too_close_to_funding<{cfg.min_minutes_to_funding}m")
-    if (funding_rate_8h >= cfg.funding_thr) and (basis_bps <= cfg.basis_max_bps):
-        return ("LONG_SPOT_SHORT_PERP", cfg.size_btc, "funding_high_and_basis_ok")
+
+    # Exit conditions
+    exit_now = (funding_rate_8h < cfg.funding_thr * 0.6) or (basis_bps > cfg.basis_exit_bps)
+
+    # If already in position -> HOLD until exit triggers
+    if in_pos:
+        if exit_now:
+            return ("FLAT", 0.0, "exit_conditions")
+        return ("HOLD", cfg.size_btc, "hold_in_position")
+
+    # Entry conditions
+    if (funding_rate_8h >= cfg.funding_thr) and (basis_bps <= cfg.basis_enter_bps):
+        return ("LONG_SPOT_SHORT_PERP", cfg.size_btc, "enter_funding_ok_basis_ok")
+
     return ("FLAT", 0.0, "conditions_not_met")
 
 
@@ -93,7 +132,18 @@ async def stream_baseline_signals(
                 funding_rate_8h = float(basis["funding_rate_8h"])
                 minutes_to_funding = float(basis["minutes_to_funding"])
 
-                action, size_btc, reason = decide_signal(unsafe, basis_bps, funding_rate_8h, minutes_to_funding, cfg)
+                # NEW: stateful baseline (prevents re-entry churn)
+                last_action = _read_last_action(out_path)
+                in_pos = last_action in ("LONG_SPOT_SHORT_PERP", "HOLD")
+
+                action, size_btc, reason = decide_signal(
+                    unsafe,
+                    basis_bps,
+                    funding_rate_8h,
+                    minutes_to_funding,
+                    in_pos,
+                    cfg,
+                )
 
                 writer.writerow(
                     [ts_ms, symbol, unsafe, basis_bps, funding_rate_8h, minutes_to_funding, action, size_btc, reason]
