@@ -1,98 +1,27 @@
-# Python-generated files
+# Python
 __pycache__/
-*.py[oc]
+*.pyc
 *.pyo
 *.pyd
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
 .venv/
 venv/
-ENV/
 env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Data files (raw data, processed data, logs)
-data/
-*.csv
-*.parquet
-*.pkl
-*.pickle
-*.h5
-*.hdf5
-*.db
-*.sqlite
-*.sqlite3
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Runtime data (do not commit)
+data/raw/
+data/derived/
+data/logs/
 
 # Logs
 *.log
-logs/
-*.log.*
 
-# Environment variables and secrets
-.env
-.env.local
-.env.*.local
-*.key
-*.pem
-secrets.yaml
-api_keys.yaml
-
-# IDE and Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-*.sublime-project
-*.sublime-workspace
-
-# Jupyter Notebook
-.ipynb_checkpoints/
-*.ipynb
-
-# PyCharm
-.idea/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pytest
-.pytest_cache/
-.coverage
-htmlcov/
-
-# UV package manager
-uv.lock
-
-# OS files
-Thumbs.db
-.DS_Store
-*.bak
-*.tmp
-
-# Model files (if you train models)
-*.pt
-*.pth
-*.ckpt
-*.safetensors
-models/
-checkpoints/
+# Local config secrets (later)
+*.env
