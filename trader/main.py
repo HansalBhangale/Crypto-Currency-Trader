@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import logging
 from pathlib import Path
 
 from trader.logging_setup import setup_logging
 from trader.settings import Settings
-
 
 log = logging.getLogger("trader.main")
 
@@ -21,6 +21,13 @@ def ensure_dirs(settings: Settings) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="RL Crypto Trader")
     parser.add_argument("--config", type=str, required=True, help="Path to config YAML")
+    parser.add_argument(
+        "--run",
+        type=str,
+        default="",
+        choices=["", "spot_bbo"],
+        help="Optional runnable: spot_bbo",
+    )
     args = parser.parse_args()
 
     settings = Settings.load(args.config)
@@ -29,13 +36,20 @@ def main() -> int:
         to_file=settings.logging.to_file,
         filename=settings.logging.filename,
     )
-
     ensure_dirs(settings)
 
     log.info("OK: config + logging initialized")
     log.info("Project=%s Env=%s Exchange=%s", settings.project.name, settings.project.env, settings.project.exchange)
     log.info("Spot symbol=%s Perp symbol=%s", settings.project.symbol_spot, settings.project.symbol_perp)
     log.info("Dirs: raw=%s derived=%s logs=%s", settings.paths.raw_dir, settings.paths.derived_dir, settings.paths.logs_dir)
+
+    if args.run == "spot_bbo":
+        from trader.data.binance_spot_bbo import stream_spot_bbo
+
+        out_csv = str(Path(settings.paths.raw_dir) / "spot_bbo.csv")
+        log.info("Starting spot BBO stream -> %s", out_csv)
+        asyncio.run(stream_spot_bbo(settings.project.symbol_spot, out_csv))
+        return 0
 
     return 0
 
