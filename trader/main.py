@@ -25,7 +25,7 @@ def main() -> int:
         "--run",
         type=str,
         default="",
-        choices=["", "spot_bbo", "spot_bars_1m"],
+        choices=["", "spot_bbo", "spot_bars_1m", "spot_bars_5m"],
         help="Optional runnable: spot_bbo",
     )
     args = parser.parse_args()
@@ -58,6 +58,15 @@ def main() -> int:
         log.info("Building 1m bars: %s -> %s", in_csv, out_csv)
         build_spot_1m_bars(in_csv, out_csv)
         return 0
+    if args.run == "spot_bars_5m":
+        from trader.features.spot_bars import build_spot_5m_bars
+
+        in_csv = str(Path(settings.paths.derived_dir) / "spot_1m_bars.csv")
+        out_csv = str(Path(settings.paths.derived_dir) / "spot_5m_bars.csv")
+        log.info("Building 5m bars: %s -> %s", in_csv, out_csv)
+        build_spot_5m_bars(in_csv, out_csv)
+        return 0
+
 
     return 0
 
