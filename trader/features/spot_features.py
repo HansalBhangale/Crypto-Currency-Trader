@@ -11,14 +11,15 @@ log = logging.getLogger("trader.spot_features")
 
 def build_spot_features_5m(input_5m_csv: str, output_csv: str) -> None:
     """
-    Input:  spot_5m_bars.csv with columns:
+    Input:  spot_5m_bars.csv columns:
       bar_ts, symbol, open, high, low, close, mid_vwap, spread_bps_mean, spread_bps_p95, n_ticks
 
-    Output: spot_features_5m.csv with columns (v0):
+    Output: spot_features_5m.csv columns (v0):
       bar_ts, symbol, close,
       r_5m, r_15m, r_1h, r_4h,
       vol_1h, vol_6h,
-      spread_bps_mean, spread_bps_p95, n_ticks
+      spread_bps_mean, spread_bps_p95, n_ticks,
+      dq_score, unsafe
     """
     in_path = Path(input_5m_csv)
     out_path = Path(output_csv)
@@ -38,7 +39,6 @@ def build_spot_features_5m(input_5m_csv: str, output_csv: str) -> None:
     for symbol, g in df.groupby("symbol", sort=True):
         g = g.copy()
 
-        # Use close as reference price for returns
         close = g["close"].astype(float)
         logp = np.log(close.replace(0, np.nan))
 
@@ -53,11 +53,23 @@ def build_spot_features_5m(input_5m_csv: str, output_csv: str) -> None:
         g["vol_1h"] = r5.rolling(12, min_periods=12).std()
         g["vol_6h"] = r5.rolling(72, min_periods=72).std()
 
+        # -----------------------------
+        # Data Quality (DQ) + UNSAFE
+        # -----------------------------
+        g["tick_ok"] = (g["n_ticks"] >= 240).astype(int)
+        g["spread_ok"] = (g["spread_bps_mean"] <= 5.0).astype(int)
+
+        g["jump_ok"] = np.where(g["r_5m"].isna(), 1, (g["r_5m"].abs() <= 0.02).astype(int))
+
+        g["dq_score"] = 0.4 * g["tick_ok"] + 0.3 * g["spread_ok"] + 0.3 * g["jump_ok"]
+        g["unsafe"] = (g["dq_score"] < 0.9).astype(int)
+
         out_cols = [
             "bar_ts", "symbol", "close",
             "r_5m", "r_15m", "r_1h", "r_4h",
             "vol_1h", "vol_6h",
             "spread_bps_mean", "spread_bps_p95", "n_ticks",
+            "dq_score", "unsafe",
         ]
         out.append(g[out_cols])
 
