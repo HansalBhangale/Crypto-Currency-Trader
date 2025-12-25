@@ -66,5 +66,7 @@ Start-LoopRunner -Title "05 SPOT_PIPELINE_LOOP" -EverySeconds 60
 
 Start-Runner -Title "06 STATUS_WATCH"   -RunArg "status_watch"
 
+Start-Runner -Title "07 PAPER_PORTFOLIO" -RunArg "paper_portfolio"
+
 
 Write-Host "Done. Close any window or press Ctrl+C inside it to stop that runner."

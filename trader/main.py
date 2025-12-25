@@ -25,7 +25,7 @@ def main() -> int:
         "--run",
         type=str,
         default="",
-        choices=["", "spot_bbo", "spot_bars_1m", "spot_bars_5m", "spot_features_5m", "perp_funding", "basis_1m","baseline_signals","status_watch"],
+        choices=["", "spot_bbo", "spot_bars_1m", "spot_bars_5m", "spot_features_5m", "perp_funding", "basis_1m","baseline_signals","status_watch","paper_portfolio"],
         help="Optional runnable: spot_bbo",
     )
     args = parser.parse_args()
@@ -111,6 +111,27 @@ def main() -> int:
         log.info("Starting status_watch (heartbeat every 60s)")
         asyncio.run(run_status_watch(wp, every_s=60.0))
         return 0
+    if args.run == "paper_portfolio":
+        from trader.sim.paper_portfolio import run_paper_portfolio
+
+        sig_csv = str(Path(settings.paths.derived_dir) / "baseline_signals.csv")
+        basis_csv = str(Path(settings.paths.derived_dir) / "basis_1m.csv")
+        out_csv = str(Path(settings.paths.derived_dir) / "paper_portfolio.csv")
+        st_json = str(Path(settings.paths.derived_dir) / "paper_state.json")
+
+        log.info("Starting paper_portfolio -> %s", out_csv)
+        asyncio.run(
+            run_paper_portfolio(
+                baseline_signals_csv=sig_csv,
+                basis_1m_csv=basis_csv,
+                out_csv=out_csv,
+                state_json=st_json,
+                initial_cash_usdt=10_000.0,
+                poll_s=60.0,
+            )
+        )
+        return 0
+
 
 
     return 0
