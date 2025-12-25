@@ -25,7 +25,7 @@ def main() -> int:
         "--run",
         type=str,
         default="",
-        choices=["", "spot_bbo", "spot_bars_1m", "spot_bars_5m", "spot_features_5m", "perp_funding", "basis_1m"],
+        choices=["", "spot_bbo", "spot_bars_1m", "spot_bars_5m", "spot_features_5m", "perp_funding", "basis_1m","baseline_signals","status_watch"],
         help="Optional runnable: spot_bbo",
     )
     args = parser.parse_args()
@@ -91,9 +91,26 @@ def main() -> int:
         log.info("Starting basis_1m -> %s", out_csv)
         asyncio.run(stream_basis_1m(spot_csv, perp_csv, out_csv, poll_s=60.0))
         return 0
- 
+    if args.run == "baseline_signals":
+        from trader.strategies.baseline_funding_arb import stream_baseline_signals
 
+        spot_feat = str(Path(settings.paths.derived_dir) / "spot_features_5m.csv")
+        basis_csv = str(Path(settings.paths.derived_dir) / "basis_1m.csv")
+        out_csv = str(Path(settings.paths.derived_dir) / "baseline_signals.csv")
 
+        log.info("Starting baseline_signals -> %s", out_csv)
+        asyncio.run(stream_baseline_signals(spot_feat, basis_csv, out_csv, poll_s=60.0))
+        return 0
+    if args.run == "status_watch":
+        from trader.monitor.status_watch import WatchPaths, run_status_watch
+
+        wp = WatchPaths(
+            raw_dir=Path(settings.paths.raw_dir),
+            derived_dir=Path(settings.paths.derived_dir),
+        )
+        log.info("Starting status_watch (heartbeat every 60s)")
+        asyncio.run(run_status_watch(wp, every_s=60.0))
+        return 0
 
 
     return 0
