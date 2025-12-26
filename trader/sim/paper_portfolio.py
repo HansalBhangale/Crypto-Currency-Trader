@@ -4,7 +4,6 @@ import asyncio
 import csv
 import json
 import logging
-import os
 import time
 from dataclasses import dataclass, asdict
 from pathlib import Path
@@ -16,9 +15,17 @@ log = logging.getLogger("trader.paper_portfolio")
 
 
 def _read_last_row(csv_path: Path) -> dict | None:
+    """
+    Reads the last row of a CSV safely.
+    - Returns None if file missing or empty.
+    - Returns None if CSV has no header/columns (e.g., 0-byte or partially written).
+    """
     if not csv_path.exists():
         return None
-    df = pd.read_csv(csv_path)
+    try:
+        df = pd.read_csv(csv_path)
+    except pd.errors.EmptyDataError:
+        return None
     if df.empty:
         return None
     return df.iloc[-1].to_dict()
@@ -168,9 +175,8 @@ async def run_paper_portfolio(
     initial_cash_usdt: float = 10_000.0,
     poll_s: float = 60.0,
     # costs (bps)
-    spot_fee_bps: float = 10.0,
-    perp_fee_bps: float = 4.0,
-    slip_bps: float = 2.0,
+    fee_bps: float = 7.5,        # from config.paper.fee_bps (combined)
+    slippage_bps: float = 2.0,   # from config.paper.slippage_bps
 ) -> None:
     sig_path = Path(baseline_signals_csv)
     basis_path = Path(basis_1m_csv)
@@ -194,7 +200,7 @@ async def run_paper_portfolio(
 
     _rotate_if_old_header(out_path, required_cols)
 
-    file_exists = out_path.exists()
+    file_exists = out_path.exists() and out_path.stat().st_size > 0
     with out_path.open("a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if not file_exists:
@@ -232,10 +238,8 @@ async def run_paper_portfolio(
 
                 # --- Funding cashflow every tick (perp only) ---
                 # funding_rate_8h applies to notional q_perp * price over 8 hours
-                # per minute: / 480 ; scale by poll minutes
                 poll_minutes = poll_s / 60.0
                 funding_usdt = -(st.q_perp_btc * perp_mark * funding_rate_8h * (poll_minutes / 480.0))
-                # cash increases when funding_usdt > 0 (typically short when funding positive)
                 st.cash_usdt += funding_usdt
 
                 fees_usdt = 0.0
@@ -252,26 +256,27 @@ async def run_paper_portfolio(
                     if action == "FLAT":
                         target_spot = 0.0
                         target_perp = 0.0
-                    elif action == "LONG_SPOT_SHORT_PERP":
+                    elif action in ("LONG_SPOT_SHORT_PERP", "HOLD"):
                         target_spot = +size_btc
                         target_perp = -size_btc
                     else:
-                        target_spot = 0.0
-                        target_perp = 0.0
+                        # unknown action -> no-op
+                        target_spot = st.q_spot_btc
+                        target_perp = st.q_perp_btc
 
                     # Trades (instant fills at mid/mark for now)
                     dq_spot = _apply_spot_trade(st, target_spot, spot_mid)
                     dq_perp = _apply_perp_trade(st, target_perp, perp_mark)
 
-                    # --- Fees (taker baseline) ---
-                    fees_usdt += abs(dq_spot) * spot_mid * (spot_fee_bps / 10_000.0)
-                    fees_usdt += abs(dq_perp) * perp_mark * (perp_fee_bps / 10_000.0)
-                    st.cash_usdt -= fees_usdt
+                    # --- Costs on executed notional ---
+                    spot_notional = abs(dq_spot) * spot_mid
+                    perp_notional = abs(dq_perp) * perp_mark
+                    total_notional = spot_notional + perp_notional
 
-                    # --- Slippage (simple bps model, always a cost) ---
-                    slippage_usdt += abs(dq_spot) * spot_mid * (slip_bps / 10_000.0)
-                    slippage_usdt += abs(dq_perp) * perp_mark * (slip_bps / 10_000.0)
-                    st.cash_usdt -= slippage_usdt
+                    fees_usdt = (fee_bps / 10_000.0) * total_notional
+                    slippage_usdt = (slippage_bps / 10_000.0) * total_notional
+
+                    st.cash_usdt -= (fees_usdt + slippage_usdt)
 
                     _save_state(st_path, st)
 
