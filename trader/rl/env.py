@@ -136,38 +136,43 @@ class RLCryptoEnv(gym.Env):
         action = int(action)
         action = max(0, min(action, self.cfg.n_actions - 1))
 
-        # current row (for unsafe gate)
+        # current row (unsafe gate)
         r = self.df.iloc[self.t]
         unsafe = int(r["unsafe"])
 
-        effective = 0
+        prev_pos = int(self.pos)
+
+        # Action semantics:
+        # 0 = FLAT (target pos 0)
+        # 1 = ENTER (target pos 1)
+        # 2 = HOLD (keep pos)
         if unsafe == 1:
-            # force flat when unsafe
-            self.pos = 0
-            effective = 0
+            target_pos = 0
         else:
             if action == 0:
-                self.pos = 0
-                effective = 0
+                target_pos = 0
             elif action == 1:
-                self.pos = 1
-                effective = 1
-            elif action == 2:
-                # hold current pos
-                effective = 1 if self.pos == 1 else 0
+                target_pos = 1
+            else:  # action == 2
+                target_pos = prev_pos
+
+        # effective = position actually changed (trade event)
+        self.pos = int(target_pos)
+        effective = 1 if self.pos != prev_pos else 0
 
         # move forward one step
         t_next = min(self.t + 1, self.n_rows - 1)
 
         # reward: simple PnL proxy
-        # if in position, reward ~ r_5m (log return scaled); else 0
-        r_next = float(self.df.iloc[t_next]["r_5m"])
-        reward = (r_next * 10_000.0) if self.pos == 1 else 0.0  # scale to ~dollars-ish
+        r_next = self.df.iloc[t_next]["r_5m"]
+        r_next = float(r_next) if (r_next == r_next) else 0.0  # NaN-safe
+
+        reward = (r_next * 10_000.0) if self.pos == 1 else 0.0  # dollars-ish
         if unsafe == 1:
             reward -= 0.5  # small penalty for unsafe rows
 
-        # update equity (toy)
-        self.equity += reward
+        # update equity
+        self.equity = float(self.equity) + float(reward)
 
         self.t = t_next
         terminated = (self.t >= self.n_rows - 1)
@@ -175,9 +180,9 @@ class RLCryptoEnv(gym.Env):
 
         obs = self._obs_from_row(self.t)
         info = {
-            "t": self.t,
-            "pos": self.pos,
-            "effective": effective,
+            "t": int(self.t),
+            "pos": int(self.pos),
+            "effective": int(effective),
             "equity": float(self.equity),
             "unsafe": int(obs[-1]),
         }

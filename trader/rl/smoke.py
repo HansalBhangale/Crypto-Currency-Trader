@@ -21,6 +21,8 @@ def main() -> int:
     total_reward = 0.0
     last_eq = info.get("equity", 0.0)
 
+    ACTION_NAME = {0: "FLAT", 1: "ENTER", 2: "HOLD"}
+
     for t in range(args.steps):
         a = int(env.action_space.sample())
         obs, r, terminated, truncated, info = env.step(a)
@@ -33,7 +35,8 @@ def main() -> int:
         last_eq = eq
 
         if (args.print_every > 0) and (t % args.print_every == 0):
-            print(f"t={t:04d} a={a} eff={eff} pos={pos} r={r:.6f} eq={eq:.2f} unsafe={unsafe}")
+            an = ACTION_NAME.get(a, str(a))
+            print(f"t={t:04d} a={a}({an}) eff={eff} pos={pos} r={r:.6f} eq={eq:.2f} unsafe={unsafe}")
 
         if terminated or truncated:
             break
