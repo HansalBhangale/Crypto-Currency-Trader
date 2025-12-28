@@ -2,3 +2,4 @@ pyyaml
 websockets
 pandas
 httpx
+gymnasium
